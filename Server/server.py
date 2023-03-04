@@ -10,7 +10,7 @@ from modules.database_modules import *
 app = FastAPI()
 
 
-DATABASE_PATH = './Database/Glossa.db'
+DATABASE_PATH = './database/Glossa.db'
 CONNECTION = create_connection(DATABASE_PATH)
 SECRET_KEY = 42
 

@@ -2,6 +2,7 @@ import secrets
 import uvicorn
 import os
 import sqlite3 as sl
+import atexit
 from fastapi import FastAPI, Request
 from modules.status_responses import *
 from modules.requests_consts import *
@@ -10,7 +11,7 @@ from modules.database_modules import *
 app = FastAPI()
 
 
-DATABASE_PATH = './database/Glossa.db'
+DATABASE_PATH = "./Database/Glossa.db"
 CONNECTION = create_connection(DATABASE_PATH)
 SECRET_KEY = 42
 
@@ -18,10 +19,10 @@ SECRET_KEY = 42
 @app.post("/register")
 async def register_user(info: Request):
     """Function Processing Register Request
-            main parameters:
-                :param nickname - login of the user
-                :param email - e-mail of user
-                :param password - password of the user
+    main parameters:
+        :param nickname - login of the user
+        :param email - e-mail of user
+        :param password - password of the user
     """
     req_info = await info.json()
     if SECRET_KEY == 42:
@@ -30,15 +31,15 @@ async def register_user(info: Request):
         user_avatar = req_info["avatar"]
         user_password = req_info["password"]
         if is_user_registered(CONNECTION, user_nickname, user_email):
-            return {"status": 406, "description": "Unable to register user: such nickname or e-mail are already in user"}
+            return {
+                "status": 406,
+                "description": "Unable to register user: such nickname or e-mail are already in user",
+            }
         sql = f'INSERT INTO Users(name, password, email, avatar) VALUES("{user_nickname}","{user_password}","{user_email}","{user_avatar}")'
         CONNECTION.cursor().execute(sql)
+        CONNECTION.commit()
         return build_successful_response()
     return {"status": 407, "description": "Wrong Secret Key!"}
-
-
-
-
 
 
 @app.post("/login")
@@ -48,8 +49,16 @@ async def login_user(info: Request):
         return build_unsucessfull_resuponse()
 
 
+def on_exit():
+    """Saves database on exit"""
+    print("Saving Database...")
+    CONNECTION.commit()
+    print("Saved!")
+
+
 def main():
     """Runs server via Uvicorn"""
+    atexit.register(on_exit)
     uvicorn.run(f"{os.path.basename(__file__)[:-3]}:app", log_level="info")
 
 

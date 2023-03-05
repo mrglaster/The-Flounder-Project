@@ -1,15 +1,12 @@
-import secrets
 import uvicorn
 import os
-import sqlite3 as sl
 import atexit
 from fastapi import FastAPI, Request
+from pyisemail import is_email
 from modules.status_responses import *
-from modules.requests_consts import *
 from modules.database_modules import *
 
 app = FastAPI()
-
 
 DATABASE_PATH = "./Database/Glossa.db"
 CONNECTION = create_connection(DATABASE_PATH)
@@ -25,7 +22,7 @@ async def register_user(info: Request):
         :param password - password of the user
     """
     req_info = await info.json()
-    if SECRET_KEY == 42:
+    if SECRET_KEY == req_info["secretkey"]:
         user_nickname = req_info["nickname"]
         user_email = req_info["email"]
         user_avatar = req_info["avatar"]
@@ -43,10 +40,17 @@ async def register_user(info: Request):
 
 
 @app.post("/login")
+@app.post("/authorize")
 async def login_user(info: Request):
     req_info = await info.json()
-    if req_info["action"] == LOGIN_REQUEST:
-        return build_unsucessfull_resuponse()
+    if req_info["secretkey"] == SECRET_KEY:
+        user_login = req_info["login"]
+        user_password = req_info["password"]
+        login_type = is_email(user_login)
+        if is_correct_authorize(CONNECTION, user_login, user_password, is_email=login_type):
+            return {"status": 200, "description": "You were successfully authorized"}
+        return {"status": 406, "description": "Wrong login or password"}
+    return {"status": 407, "description": "Wrong secret key!"}
 
 
 def on_exit():
@@ -65,3 +69,5 @@ def main():
 if __name__ == "__main__":
     """Invokes the main function, starts the server"""
     main()
+
+

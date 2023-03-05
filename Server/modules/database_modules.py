@@ -60,6 +60,17 @@ def is_value_used(connection, table_name, column_name, value):
 
 
 def is_user_registered(connection, name, email):
-    query = f'SELECT COUNT(id) FROM (SELECT * FROM Users where name="{name}" or email="{email}") ;'
+    query = f'SELECT COUNT(id) FROM (SELECT * FROM Users WHERE name="{name}" OR email="{email}") ;'
     cursor = connection.cursor()
+    return cursor.execute(query).fetchall()[0][0] != 0
+
+
+def is_correct_authorize(connection, login, password, is_email=False):
+    """Checks if user sent valid data for authorization"""
+    query = None
+    cursor = connection.cursor()
+    if is_email:
+        query = f'SELECT COUNT(ID) FROM (SELECT * FROM Users WHERE email="{login}" AND password="{password}");'
+    else:
+        query = f'SELECT COUNT(ID) FROM (SELECT * FROM Users WHERE name="{login}" AND password="{password}");'
     return cursor.execute(query).fetchall()[0][0] != 0

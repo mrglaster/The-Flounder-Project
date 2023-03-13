@@ -26,8 +26,8 @@ def translate_words(source_lang, dist_lang, words):
         results = translated.split(',')
     else:
         results = translated.split(delimiter)
-    if dist_lang == "de":
-        process_german_articles(results)
+    #if dist_lang == "de":
+        #process_german_articles(results)
     return results
 
 

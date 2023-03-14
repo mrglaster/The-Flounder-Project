@@ -75,3 +75,25 @@ def get_wordinfo_en(word):
     if not len(definitions):
         definitions.append("We're sorry, but we hadn't found any definitions for this word(((")
     return pronunciation, definitions, examples
+
+
+
+def get_wordinfo_de_proto(word):
+    """Gets information about the current german word
+    PROTOTYPE! WILL BE REMOVED! USE ON YOUR OWN RISK!"""
+    url = "https://lexicala1.p.rapidapi.com/search-entries"
+    querystring = {f"text": f"{word}", "language": "de"}
+    headers = {
+        "X-RapidAPI-Key": "cd6b050580msh74fad990fc989f6p17530cjsnb396d6cfe8ea",
+        "X-RapidAPI-Host": "lexicala1.p.rapidapi.com"
+    }
+    response = requests.request("GET", url, headers=headers, params=querystring).json()["results"]
+    definitions = []
+    examples = []
+    for i in response:
+        for j in i["senses"]:
+            definitions.append(j["definition"])
+            examples.append(j["examples"][0]["text"])
+    return definitions, examples
+
+

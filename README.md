@@ -12,10 +12,16 @@ FastAPI &amp; .NET MAUI based client-server app for new vocabulary learning
 ```pip install .```
 
 3) Install packages from requirements.txt with command
-```pip install -r requirements.txt```
+
+```
+pip install -r requirements.txt
+```
+
 or 
 
-```pip install deep_translator==1.10.1 german_nouns==1.2.5 requests==2.28.2 fastapi==0.94.1 pyisemail==2.0.1 uvicorn==0.21.0```
+```
+pip install deep_translator==1.10.1 german_nouns==1.2.5 requests==2.28.2 fastapi==0.94.1 pyisemail==2.0.1 uvicorn==0.21.0
+```
 
 4) Server is ready to use!
 

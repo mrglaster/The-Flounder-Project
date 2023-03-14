@@ -7,9 +7,11 @@ FastAPI &amp; .NET MAUI based client-server app for new vocabulary learning
 ### Server
 
 1) Install Python 3.11
-2) Download the [Nostril Package](https://data.caltech.edu/records/5ckr1-g7m46), unzip the archive, ruh the command line in the package's folder and install it with command
+2) Download the [Nostril Package](https://data.caltech.edu/records/5ckr1-g7m46), unzip the archive, ruh the command line in the package's folder and install it with the command
 
-```pip install .```
+```
+pip install .
+```
 
 3) Install packages from requirements.txt with command
 

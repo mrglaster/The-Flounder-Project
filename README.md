@@ -1,4 +1,4 @@
-## The  Glossa Project
+## The  Flunder Project
 FastAPI &amp; .NET MAUI based client-server app for new vocabulary learning 
 
 

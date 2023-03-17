@@ -63,7 +63,7 @@ def on_exit():
 def main():
     """Runs server via Uvicorn"""
     atexit.register(on_exit)
-    uvicorn.run(f"{os.path.basename(__file__)[:-3]}:app", log_level="info")
+    uvicorn.run(f"{os.path.basename(__file__)[:-3]}:app", host="192.168.0.12", log_level="info")
 
 
 if __name__ == "__main__":

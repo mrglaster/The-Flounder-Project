@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:Glossa_App.ViewModels"
+             x:Class="Glossa_App.Views.SignupPage"
+             Title="SignupPage">
+    <ContentPage.BindingContext>
+        <viewModels:SignupViewModel />
+    </ContentPage.BindingContext>
+    <VerticalStackLayout>
+        <Entry Placeholder="Login"
+                Text="{Binding Login}"
+                HeightRequest="100"/>
+        <Entry Placeholder="Password"
+                Text="{Binding Password}"
+                HeightRequest="100"
+                />
+        <Entry Placeholder="Email"
+                Text="{Binding Email}"
+                HeightRequest="100"
+                />
+        <Label Text="{Binding ResultMsg}" />
+        <Button x:Name="LogBtn"
+                Text="Submit"
+                Command="{Binding SubmitCommand}"/>
+    </VerticalStackLayout>
+</ContentPage>

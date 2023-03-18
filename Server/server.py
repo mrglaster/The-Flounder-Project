@@ -3,6 +3,8 @@ import os
 import atexit
 from fastapi import FastAPI, Request
 from pyisemail import is_email
+
+import modules.requests_consts
 from modules.status_responses import *
 from modules.database_modules import *
 
@@ -28,15 +30,12 @@ async def register_user(info: Request):
         user_avatar = req_info["avatar"]
         user_password = req_info["password"]
         if is_user_registered(CONNECTION, user_nickname, user_email):
-            return {
-                "status": 406,
-                "description": "Unable to register user: such nickname or e-mail are already in user",
-            }
+            return modules.requests_consts.generate_access_denied_json(modules.requests_consts.USER_DATA_IN_USE_MESSAGE)
         sql = f'INSERT INTO Users(name, password, email, avatar) VALUES("{user_nickname}","{user_password}","{user_email}","{user_avatar}")'
         CONNECTION.cursor().execute(sql)
         CONNECTION.commit()
         return build_successful_response()
-    return {"status": 407, "description": "Wrong Secret Key!"}
+    return modules.requests_consts.WRONG_SKEY_JSON
 
 
 @app.post("/login")
@@ -48,9 +47,20 @@ async def login_user(info: Request):
         user_password = req_info["password"]
         login_type = is_email(user_login)
         if is_correct_authorize(CONNECTION, user_login, user_password, is_email=login_type):
-            return {"status": 200, "description": "You were successfully authorized"}
-        return {"status": 406, "description": "Wrong login or password"}
-    return {"status": 407, "description": "Wrong secret key!"}
+            return modules.requests_consts.generate_success_json(
+                modules.requests_consts.AUTHORIZATION_SUCCESSFUL_MESSAGE)
+        return modules.requests_consts.generate_access_denied_json(modules.requests_consts.WRONG_USERDATA_MESSAGERO)
+    return modules.requests_consts.WRONG_SKEY_JSON
+
+
+@app.post("/errcodes")
+@app.post("/codes")
+async def get_actual_err_codes(info: Request):
+    req_info = await info.json()
+    if req_info["secretkey"] == SECRET_KEY:
+        print(modules.requests_consts.ACTUAL_CODES)
+        return modules.requests_consts.ACTUAL_CODES
+    return modules.requests_consts.WRONG_SKEY_JSON
 
 
 def on_exit():
@@ -63,11 +73,9 @@ def on_exit():
 def main():
     """Runs server via Uvicorn"""
     atexit.register(on_exit)
-    uvicorn.run(f"{os.path.basename(__file__)[:-3]}:app", host="192.168.0.12", log_level="info")
+    uvicorn.run(f"{os.path.basename(__file__)[:-3]}:app", log_level="info")
 
 
 if __name__ == "__main__":
     """Invokes the main function, starts the server"""
     main()
-
-

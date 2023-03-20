@@ -16,6 +16,7 @@ SECRET_KEY = 42
 
 
 @app.post("/register")
+@app.post("/signup")
 async def register_user(info: Request):
     """Function Processing Register Request
     main parameters:
@@ -40,6 +41,7 @@ async def register_user(info: Request):
 
 @app.post("/login")
 @app.post("/authorize")
+@app.post("/signin")
 async def login_user(info: Request):
     req_info = await info.json()
     if req_info["secretkey"] == SECRET_KEY:
@@ -55,6 +57,7 @@ async def login_user(info: Request):
 
 @app.post("/errcodes")
 @app.post("/codes")
+@app.post("/gaec")
 async def get_actual_err_codes(info: Request):
     req_info = await info.json()
     if req_info["secretkey"] == SECRET_KEY:

@@ -4,9 +4,8 @@ import atexit
 from fastapi import FastAPI, Request
 from pyisemail import is_email
 
-import modules.requests_consts
-from modules.status_responses import *
-from modules.database_modules import *
+import modules.rr_processing.requests_consts
+from modules.database_processing.database_modules import *
 
 app = FastAPI()
 
@@ -15,8 +14,7 @@ CONNECTION = create_connection(DATABASE_PATH)
 SECRET_KEY = 42
 
 
-@app.post("/register")
-@app.post("/signup")
+@app.post("/user/register")
 async def register_user(info: Request):
     """Function Processing Register Request
     main parameters:
@@ -39,9 +37,8 @@ async def register_user(info: Request):
     return modules.requests_consts.WRONG_SKEY_JSON
 
 
-@app.post("/login")
-@app.post("/authorize")
-@app.post("/signin")
+@app.post("/user/login")
+@app.post("/user/authorize")
 async def login_user(info: Request):
     req_info = await info.json()
     if req_info["secretkey"] == SECRET_KEY:
@@ -55,15 +52,17 @@ async def login_user(info: Request):
     return modules.requests_consts.WRONG_SKEY_JSON
 
 
-@app.post("/errcodes")
-@app.post("/codes")
-@app.post("/gaec")
+@app.post("/utils/errcodes")
+@app.post("/utils/codes")
 async def get_actual_err_codes(info: Request):
     req_info = await info.json()
     if req_info["secretkey"] == SECRET_KEY:
         print(modules.requests_consts.ACTUAL_CODES)
         return modules.requests_consts.ACTUAL_CODES
     return modules.requests_consts.WRONG_SKEY_JSON
+
+
+
 
 
 def on_exit():

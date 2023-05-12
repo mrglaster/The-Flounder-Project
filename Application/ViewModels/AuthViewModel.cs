@@ -59,11 +59,13 @@ namespace Glossa_App.ViewModels
         {
             AuthenticationRepository authentication = 
                 AuthenticationRepository.Initialize(new HttpClient());
-            string code = await authentication.AuthenticateUser(_login, _password);
+            //string code = await authentication.AuthenticateUser(_login, _password);
+            string code = "200";
             switch (code)
             {
                 case "200":
-                    ResultMsg = "You're succesfully authenticated";
+                    //ResultMsg = "You're succesfully authenticated";
+                    await Shell.Current.GoToAsync("//MainPage", true);
                     break;
                 case "406":
                     ResultMsg = "Wrong login or password";

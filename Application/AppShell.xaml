@@ -9,11 +9,17 @@
     <ShellContent
         Title="Authorization"
         ContentTemplate="{DataTemplate local:AuthPage}"
-        Route="MainPage" />
+        Route="AuthPage" />
 
     <ShellContent
         Title="Signup"
         ContentTemplate="{DataTemplate local:SignupPage}"
         Icon="{OnPlatform 'icon_about.png', iOS='icon_about_ios.png', MacCatalyst='icon_about_ios.png'}"
         />
+
+    <ShellContent
+        Title="Main"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Icon="{OnPlatform 'icon_about.png', iOS='icon_about_ios.png', MacCatalyst='icon_about_ios.png'}"
+        Route="MainPage"/>
 </Shell>

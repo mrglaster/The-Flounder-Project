@@ -19,7 +19,7 @@
                 />
         
         <Label Text="{Binding ResultMsg}" />
-        <Button Text="I haven't got the account"
+        <Button Text="I haven't got an account"
                Command="{Binding GoToSignupCommand}" />
         <Button x:Name="LogBtn"
                 Text="Submit"

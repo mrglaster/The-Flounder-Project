@@ -14,7 +14,7 @@ namespace Glossa_App.Data.Repository
     {
         private const int SECRETKEY = 42;
         private const string URI = "http://192.168.0.12:8000";
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
         private static AuthenticationRepository authenticationInstance = null;
 
         private AuthenticationRepository(HttpClient httpClient)

@@ -48,7 +48,7 @@ Type: POST
 Example Request:
 ```
 {
-  "secretkey": SECRET_KEY, 
+  	"secretkey": SECRET_KEY, 
 	"login": "TestLol1", 
 	"password": "123",
 }

@@ -5,7 +5,7 @@
 
 ### Register
 
-Routing: /user/register
+Routing: /user/register <br>
 Type: POST
 
 
@@ -42,7 +42,7 @@ If user with such auth data was already registered:
 
 ### Authorization
 
-Routing: /user/login 
+Routing: /user/login  <br>
 Type: POST
 
 Example Request:
@@ -76,7 +76,7 @@ If user's data is incorrect:
 
 ### Get latest modules
 
-Routing: /study/latest_modules
+Routing: /study/latest_modules <br>
 Type: GET
 
 Example request:
@@ -122,7 +122,7 @@ Example Response:
 
 ### Get information about the module
 
-Routing: /study/get_module_info
+Routing: /study/get_module_info  <br>
 Type: GET
 
 Example request:
@@ -164,7 +164,7 @@ If module with such id doesn't exist:
 
 ### Downlaod a module
 
-Routing: /study/download_module
+Routing: /study/download_module  <br>
 Type: GET
 
 Example request:
@@ -196,7 +196,7 @@ If the module doesn't exist:
 
 ### Create the module
 
-Routing: /study/create_module
+Routing: /study/create_module  <br>
 Type: POST
 
 Example request:
@@ -218,7 +218,7 @@ Example request:
 Request if you want to use custom module icon: 
 
 ```
-	{
+{
 	"secretkey": SECRET_KEY,
 	"author": "Glaster",
 	"title": "Cold Weapon",

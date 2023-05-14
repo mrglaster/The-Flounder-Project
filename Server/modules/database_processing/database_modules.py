@@ -9,7 +9,7 @@ def get_rowcount(connection, table_name: str):
         results = cursor.fetchall()
         return len(results)
     except:
-        raise ValueError(f"Error occured during getting data from table {table_name}. Check if tablename is valid")
+        raise ValueError(f"Error occurred during getting data from table {table_name}. Check if tablename is valid")
 
 
 def get_newestId(connection, table_name: str):
@@ -60,6 +60,7 @@ def is_value_used(connection, table_name: str, column_name: str, value):
 
 
 def is_user_registered(connection, name: str, email: str):
+    """Checks if the user is registered"""
     query = f'SELECT COUNT(id) FROM (SELECT * FROM Users WHERE name="{name}" OR email="{email}") ;'
     cursor = connection.cursor()
     return cursor.execute(query).fetchall()[0][0] != 0
@@ -74,3 +75,9 @@ def is_correct_authorize(connection, login: str, password: str, is_email=False):
     else:
         query = f'SELECT COUNT(ID) FROM (SELECT * FROM Users WHERE name="{login}" AND password="{password}");'
     return cursor.execute(query).fetchall()[0][0] != 0
+
+
+def get_userid(connection, name: str) -> int:
+    """Returns userid by his/her name"""
+    query = f'SELECT id FROM Users WHERE name="{name}"'
+    return connection.cursor().execute(query).fetchall()[0][0]

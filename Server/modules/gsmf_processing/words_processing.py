@@ -14,7 +14,7 @@ def is_wordlist_valid(wordlist):
 
 def get_as_base64(url):
     """Returns file by link as base64 line"""
-    return base64.b64encode(requests.get(url).content)
+    return str(base64.b64encode(requests.get(url).content)).replace("b'", '').replace("'", '')
 
 
 def translate_words(source_lang, dist_lang, words):
@@ -69,9 +69,9 @@ def get_wordinfo_en(word):
                     pass
 
     if not len(examples):
-        examples.append("We're sorry, but we hadn't found any examples for this word(((((")
+        examples.append("NOT FOUND")
     if not len(definitions):
-        definitions.append("We're sorry, but we hadn't found any definitions for this word(((")
+        definitions.append("NOT FOUND")
     return pronunciation, definitions, examples
 
 

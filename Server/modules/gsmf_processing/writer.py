@@ -1,32 +1,54 @@
 import base64
+import random
+import string
+from PIL import Image
+from datetime import date
+
+import io
+
+
 from datetime import datetime
-from gsmf_processor.languages_parameters import SUPPORTED_LANGUAGES
-from gsmf_processor.words_processing import translate_words
-from gsmf_processor.words_processing import get_wordinfo_en
-from gsmf_processor.words_processing import is_wordlist_valid
+from modules.gsmf_processing.languages_parameters import SUPPORTED_LANGUAGES
+from modules.gsmf_processing.words_processing import translate_words
+from modules.gsmf_processing.words_processing import get_wordinfo_en
+from modules.gsmf_processing.words_processing import is_wordlist_valid
+from modules.database_processing.modules_processing import add_module_to_database
+
+
+def generate_random_string(length=20):
+    """Generates random string of selected length"""
+    letters_and_digits = string.ascii_letters + string.digits
+    return ''.join(random.choice(letters_and_digits) for i in range(length))
+
+
+def _array_to_string(arr):
+    """Converts array to the string with separator"""
+    return ';'.join([word.lower() for word in arr])
+
 
 def parse_json(request_json):
     """Gets main parameters from request json"""
     author = request_json["author"]
     title = request_json["title"]
-    wlang = request_json["wlang"]
-    date = request_json["date"]
-    words_list = request_json["wlist"]
+    wlang = request_json["language"]
+    words_list = request_json["wordlist"]
     translations_list = request_json["translations"]
-    cover = request_json["cover"]
-
-    return author, title, wlang.lower(), date, words_list, translations_list, cover
+    cover = request_json["icon"]
+    tags = request_json["tags"]
+    description = request_json["description"]
+    cur_date = date.today()
+    return author, title, wlang.lower(), cur_date, words_list, translations_list, cover, tags, description
 
 
 def convert_to_base64(file_path):
     """Converts module file to base64 format"""
     with open(file_path, "rb") as module_file:
-        return base64.b64encode(module_file.read())
+        return str(base64.b64encode(module_file.read())).replace("b'", '').replace("'", '')
 
 
-def create_module(request_json):
+def create_module(connection, request_json):
     """Creates study module file with gsmf format"""
-    author, title, wlang, date, words_list, translations_list, cover = parse_json(request_json)
+    author, title, wlang, cur_date, words_list, translations_list, cover, tags, description = parse_json(request_json)
 
     if not is_wordlist_valid(words_list):
         return {
@@ -35,37 +57,56 @@ def create_module(request_json):
             "module": ""
         }
 
-
     translation_mode = "auto" if not len(translations_list) else "hands"
 
     filename = generate_name(wlang, author, title)
 
     with open(filename, "a", encoding="utf-8") as module_file:
-        write_init(module_file, author, title, wlang, date, translation_mode, cover)
+        write_init(module_file, author, title, wlang, cur_date, translation_mode, cover)
         write_wordlist(module_file, words_list)
         write_translations(module_file, wlang, words_list)
         write_words_info(module_file, words_list)
         module_file.write("</gsmf>")
+
+    cover_path = 'data/images/default.png'
+    if 'default' not in cover:
+        cover_path = f'data/images/{generate_random_string(20)}.png'
+        image_bytes = base64.b64decode(cover)
+        img_io = io.BytesIO(image_bytes)
+        img = Image.open(img_io)
+        img.save(cover_path, "PNG")
+
+
+    add_module_to_database(connection=connection,
+                           author_name=author,
+                           title=title,
+                           description=description,
+                           language=wlang,
+                           tags=_array_to_string(tags),
+                           wordlist=_array_to_string(words_list),
+                           module_file=filename,
+                           icon=cover_path)
+
     return {
-            "status": 200,
-            "description": "The Module was Successfully created!",
-            "module": f"{convert_to_base64(filename)}"
-        }
+        "status": 200,
+        "description": "The Module was Successfully created!",
+        "module": f"{convert_to_base64(filename)}"
+    }
 
 
 def generate_name(wlang, author, title):
     """Generates filename by author name and word's language"""
-    return f"{wlang}_{author}_{title}_{str(datetime.timestamp(datetime.now())).replace('.', '')}.gsmf".lower()
+    return f"data/modules/{wlang}_{author}_{title}_{str(datetime.timestamp(datetime.now())).replace('.', '')}.gsmf".lower().strip().replace(' ', '')
 
 
-def write_init(module_file, author, title, wlang, date, trfillmode, cover):
+def write_init(module_file, author, title, wlang, cur_date, trfillmode, cover):
     """Writes init block to the study module file"""
     module_file.write("<gsmf>\n")
     module_file.write("  <init>\n")
     module_file.write(f"    <author>{author}</author>\n")
     module_file.write(f"    <title>{title}</title>\n")
     module_file.write(f"    <wlang>{wlang}</wlang>\n")
-    module_file.write(f"    <date>{date}</date>\n")
+    module_file.write(f"    <date>{cur_date}</date>\n")
     module_file.write(f"    <trfillmode>{trfillmode}</trfillmode>\n")
     module_file.write(f"    <cover>{cover}</cover>\n")
     module_file.write(f" </init>\n")

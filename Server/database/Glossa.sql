@@ -16,7 +16,10 @@ CREATE TABLE IF NOT EXISTS Studymodules(
     description TEXT,
     iconPath TEXT DEFAULT "standartTestImage.png",
     language VARCHAR(2) NOT NULL,
-    moduleFile TEXT NOT NULL
+	tags TEXT,
+    moduleFile TEXT NOT NULL,
+	wordList TEXT NOT NULL,
+	date DATE NOT NULL,
 );
 
 CREATE TABLE IF NOT EXISTS history(
@@ -26,11 +29,3 @@ CREATE TABLE IF NOT EXISTS history(
     uaction BIT NOT NULL 
 );
 
-CREATE TABLE IF NOT EXISTS history(
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
-    moduleId INTEGER NOT NULL,
-    userId INTEGER NOT NULL,
-    uaction BIT NOT NULL
-);
-
-DROP TABLE IF EXISTS sqlite_sequence;

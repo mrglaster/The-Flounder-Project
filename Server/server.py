@@ -6,6 +6,8 @@ from pyisemail import is_email
 
 import modules.rr_processing.requests_consts
 from modules.database_processing.database_modules import *
+from modules.database_processing.modules_processing import get_latest_modules
+from modules.gsmf_processing.writer import create_module
 
 app = FastAPI()
 
@@ -29,12 +31,13 @@ async def register_user(info: Request):
         user_avatar = req_info["avatar"]
         user_password = req_info["password"]
         if is_user_registered(CONNECTION, user_nickname, user_email):
-            return modules.requests_consts.generate_access_denied_json(modules.requests_consts.USER_DATA_IN_USE_MESSAGE)
+            return modules.rr_processing.requests_consts.generate_access_denied_json(
+                modules.rr_processing.requests_consts.USER_DATA_IN_USE_MESSAGE)
         sql = f'INSERT INTO Users(name, password, email, avatar) VALUES("{user_nickname}","{user_password}","{user_email}","{user_avatar}")'
         CONNECTION.cursor().execute(sql)
         CONNECTION.commit()
-        return build_successful_response()
-    return modules.requests_consts.WRONG_SKEY_JSON
+        return modules.rr_processing.requests_consts.generate_success_json("Welcome new user!")
+    return modules.rr_processing.requests_consts.WRONG_SKEY_JSON
 
 
 @app.post("/user/login")
@@ -46,10 +49,11 @@ async def login_user(info: Request):
         user_password = req_info["password"]
         login_type = is_email(user_login)
         if is_correct_authorize(CONNECTION, user_login, user_password, is_email=login_type):
-            return modules.requests_consts.generate_success_json(
-                modules.requests_consts.AUTHORIZATION_SUCCESSFUL_MESSAGE)
-        return modules.requests_consts.generate_access_denied_json(modules.requests_consts.WRONG_USERDATA_MESSAGERO)
-    return modules.requests_consts.WRONG_SKEY_JSON
+            return modules.rr_processing.requests_consts.generate_success_json(
+                modules.rr_processing.requests_consts.AUTHORIZATION_SUCCESSFUL_MESSAGE)
+        return modules.rr_processing.requests_consts.generate_access_denied_json(
+            modules.rr_processing.requests_consts.WRONG_USERDATA_MESSAGERO)
+    return modules.rr_processing.requests_consts.WRONG_SKEY_JSON
 
 
 @app.post("/utils/errcodes")
@@ -57,12 +61,45 @@ async def login_user(info: Request):
 async def get_actual_err_codes(info: Request):
     req_info = await info.json()
     if req_info["secretkey"] == SECRET_KEY:
-        print(modules.requests_consts.ACTUAL_CODES)
-        return modules.requests_consts.ACTUAL_CODES
-    return modules.requests_consts.WRONG_SKEY_JSON
+        print(modules.rr_processing.requests_consts.ACTUAL_CODES)
+        return modules.rr_processing.requests_consts.ACTUAL_CODES
+    return modules.rr_processing.requests_consts.WRONG_SKEY_JSON
 
 
+@app.get("/study/latest_modules")
+async def get_l_modules(info: Request):
+    req_info = await  info.json()
+    if req_info["secretkey"] == SECRET_KEY:
+        page = req_info["page"]
+        page_size = req_info["page_size"]
+        return {"data": get_latest_modules(destination=CONNECTION, page_num=page, page_size=page_size)}
+    return modules.rr_processing.requests_consts.WRONG_SKEY_JSON
 
+
+@app.get("/study/get_module_info")
+async def get_info_module(info: Request):
+    req_info = await  info.json()
+    if req_info["secretkey"] == SECRET_KEY:
+        module_id = req_info["module_id"]
+        if module_id <= 0 or module_id is None:
+            return {"status": 404, "description": "There is no module with such id! ID start from 1!"}
+        return modules.database_processing.modules_processing.get_module_info(connection=CONNECTION,
+                                                                              module_id=module_id)
+    return modules.rr_processing.requests_consts.WRONG_SKEY_JSON
+
+
+@app.post("/study/create_module")
+async def generate_module(info: Request):
+    req_info = await info.json()
+    return create_module(connection=CONNECTION, request_json=req_info)
+
+
+@app.get("/study/download_module")
+async def send_module(info: Request):
+    req_info = await  info.json()
+    if req_info["secretkey"] == SECRET_KEY:
+        return modules.database_processing.modules_processing.download_module(connection=CONNECTION,
+                                                                              module_id=req_info["module_id"])
 
 
 def on_exit():

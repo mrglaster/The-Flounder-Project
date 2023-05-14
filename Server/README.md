@@ -13,7 +13,7 @@ Example Request:
 
 ```
 {
-  "nickname": "Glaster",
+ 	"nickname": "Glaster",
 	"password": "thebestpassword",
 	"email": "mymail@mail.ru",
 	"avatar": "defaultAvatar.png", ; To use default one. You also can use base64 string here

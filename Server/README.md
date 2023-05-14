@@ -211,7 +211,7 @@ Example request:
 	"wordlist": ["carrot", "parsley", "cabbage", "cucumber"],
 	"tags": ["A1", "easy", "noob", "classmates", "vegetables", "food"],
 	"translations": [],
-  "translationslang": "",
+  	"translations_language": "",
 	"icon": "default"
 }
 ```
@@ -227,6 +227,7 @@ Request if you want to use custom module icon:
 	"wordlist": ["Dagger", "Spear", "Sword", "Halberd", "Glaive", "Pole-Axe", "Flail", "Mace", "Scythe", "Morgenstern", "Greatsword"],
 	"tags": ["B1", "weapon", "cold weapon", "sword", "D&D"],
 	"translations": [],
+	"translations_language": "",
 	"icon": "iVBRw0KGg.....NJggg=="
 }
 ```

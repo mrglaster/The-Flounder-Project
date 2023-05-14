@@ -33,11 +33,12 @@ def parse_json(request_json):
     wlang = request_json["language"]
     words_list = request_json["wordlist"]
     translations_list = request_json["translations"]
+    trlang = request_json["translations_language"]
     cover = request_json["icon"]
     tags = request_json["tags"]
     description = request_json["description"]
     cur_date = date.today()
-    return author, title, wlang.lower(), cur_date, words_list, translations_list, cover, tags, description
+    return author, title, wlang.lower(), cur_date, words_list, translations_list, cover, tags, description, trlang
 
 
 def convert_to_base64(file_path):
@@ -48,7 +49,7 @@ def convert_to_base64(file_path):
 
 def create_module(connection, request_json):
     """Creates study module file with gsmf format"""
-    author, title, wlang, cur_date, words_list, translations_list, cover, tags, description = parse_json(request_json)
+    author, title, wlang, cur_date, words_list, translations_list, cover, tags, description, trlang = parse_json(request_json)
 
     if not is_wordlist_valid(words_list):
         return {
@@ -64,7 +65,7 @@ def create_module(connection, request_json):
     with open(filename, "a", encoding="utf-8") as module_file:
         write_init(module_file, author, title, wlang, cur_date, translation_mode, cover)
         write_wordlist(module_file, words_list)
-        write_translations(module_file, wlang, words_list)
+        write_translations(module_file, wlang, words_list, translations=translations_list, trlang=trlang)
         write_words_info(module_file, words_list)
         module_file.write("</gsmf>")
 
@@ -120,11 +121,17 @@ def write_wordlist(module_file, word_list):
     module_file.write(' </wlist>' + '\n')
 
 
-def write_translations(module_file, source_language, word_list):
+def write_translations(module_file, source_language, word_list, translations=[], trlang=""):
     """Writes translations from source language to other supported ones"""
     module_file.write(" <translations>\n")
+    if len(translations) and trlang in SUPPORTED_LANGUAGES and len(translations) == len(word_list):
+        module_file.write(f"    <{trlang}>\n")
+        for i in translations:
+            module_file.write(f"        <tr>{i}</tr>\n")
+        module_file.write(f"    </{trlang}>\n")
+
     for i in SUPPORTED_LANGUAGES:
-        if i == source_language:
+        if i == source_language or i == trlang:
             continue
         module_file.write(f"    <{i}>\n")
         translated = translate_words(source_lang=source_language, dist_lang=i, words=word_list)

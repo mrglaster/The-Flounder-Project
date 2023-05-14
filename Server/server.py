@@ -52,7 +52,7 @@ async def login_user(info: Request):
             return modules.rr_processing.requests_consts.generate_success_json(
                 modules.rr_processing.requests_consts.AUTHORIZATION_SUCCESSFUL_MESSAGE)
         return modules.rr_processing.requests_consts.generate_access_denied_json(
-            modules.rr_processing.requests_consts.WRONG_USERDATA_MESSAGERO)
+            modules.rr_processing.requests_consts.WRONG_USERDATA_MESSAGE)
     return modules.rr_processing.requests_consts.WRONG_SKEY_JSON
 
 

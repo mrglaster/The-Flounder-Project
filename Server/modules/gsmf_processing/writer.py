@@ -171,7 +171,7 @@ def write_definitions(module_file, definitions):
         module_file.write("     <wdblock>\n")
         for df in word:
             module_file.write(f"        <df>{df}</df>\n")
-        module_file.write("     </wdlbock>\n")
+        module_file.write("     </wdblock>\n")
     module_file.write(" </definitions>\n")
 
 

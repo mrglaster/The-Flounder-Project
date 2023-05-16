@@ -92,7 +92,8 @@ Example request:
 Example Response: 
 
 ```
-{
+{	
+	"status": 200,
 	"data": [
 		{
 			"id": 2,
@@ -138,7 +139,7 @@ Example response:
 
 ```
 {
-	"status": "success",
+	"status": 200,
 	"id": 2,
 	"author": "Glaster",
 	"title": "Cold Weapon",

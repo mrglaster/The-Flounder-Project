@@ -72,7 +72,7 @@ async def get_l_modules(info: Request):
     if req_info["secretkey"] == SECRET_KEY:
         page = req_info["page"]
         page_size = req_info["page_size"]
-        return {"data": get_latest_modules(destination=CONNECTION, page_num=page, page_size=page_size)}
+        return {"status": 200, data: get_latest_modules(destination=CONNECTION, page_num=page, page_size=page_size)}
     return modules.rr_processing.requests_consts.WRONG_SKEY_JSON
 
 

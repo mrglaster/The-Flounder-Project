@@ -1,9 +1,11 @@
-import modules.phonemes2sound.generator
+import modules.phonemes_to_sound
+import  modules.phonemes_to_sound.generator
 import base64
-from modules.phonemes2sound.data_preprocessing import *
+
+from modules.phonemes_to_sound.data_preprocessing import *
 
 
-def generate_single_pronunciation_base64(phonemes: str, language="en", speaker=None):
+def generate_single_pronunciation_base64(phonemes: str, language="en-GB", speaker=None):
     """Generates pronunciation for phonemes string and returns it as a base64 string"""
     is_valid_phonemes_string(phonemes)
     speaker_name = ""
@@ -13,7 +15,7 @@ def generate_single_pronunciation_base64(phonemes: str, language="en", speaker=N
     else:
         is_valid_speaker(speaker)
         speaker_name = speaker
-    return modules.phonemes2sound.generator.get_single_pronunciation(speaker=speaker_name, text=phonemes)
+    return modules.phonemes_to_sound.generator.get_single_pronunciation(speaker=speaker_name, text=phonemes)
 
 
 def generate_single_pronunciation_to_file(phonemes: str, filename: str, language="en-US", speaker=None):

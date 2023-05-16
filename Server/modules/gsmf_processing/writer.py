@@ -3,11 +3,12 @@ import random
 import string
 from PIL import Image
 from datetime import date
-
+import unicodedata
 import io
-
-
+import re
 from datetime import datetime
+
+import modules.database_processing.modules_processing
 from modules.gsmf_processing.languages_parameters import SUPPORTED_LANGUAGES
 from modules.gsmf_processing.words_processing import translate_words
 from modules.gsmf_processing.words_processing import get_wordinfo_en
@@ -49,7 +50,14 @@ def convert_to_base64(file_path):
 
 def create_module(connection, request_json):
     """Creates study module file with gsmf format"""
-    author, title, wlang, cur_date, words_list, translations_list, cover, tags, description, trlang = parse_json(request_json)
+    author, title, wlang, cur_date, words_list, translations_list, cover, tags, description, trlang = parse_json(
+        request_json)
+
+    if modules.database_processing.modules_processing.check_title(connection, title):
+        return {"status": 52, "description": "There is already a module with such name!"}
+
+    if modules.database_processing.database_modules.get_userid(connection, author) is None:
+        return {"status": 500, "description": "Unknown Username!"}
 
     if not is_wordlist_valid(words_list):
         return {
@@ -77,7 +85,6 @@ def create_module(connection, request_json):
         img = Image.open(img_io)
         img.save(cover_path, "PNG")
 
-
     add_module_to_database(connection=connection,
                            author_name=author,
                            title=title,
@@ -95,9 +102,28 @@ def create_module(connection, request_json):
     }
 
 
+def slugify(value, allow_unicode=False):
+    """
+    Taken from https://github.com/django/django/blob/master/django/utils/text.py
+    Convert to ASCII if 'allow_unicode' is False. Convert spaces or repeated
+    dashes to single dashes. Remove characters that aren't alphanumerics,
+    underscores, or hyphens. Convert to lowercase. Also strip leading and
+    trailing whitespace, dashes, and underscores.
+    """
+    value = str(value)
+    if allow_unicode:
+        value = unicodedata.normalize('NFKC', value)
+    else:
+        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+    value = re.sub(r'[^\w\s-]', '', value.lower())
+    return re.sub(r'[-\s]+', '-', value).strip('-_')
+
+
 def generate_name(wlang, author, title):
     """Generates filename by author name and word's language"""
-    return f"data/modules/{wlang}_{author}_{title}_{str(datetime.timestamp(datetime.now())).replace('.', '')}.gsmf".lower().strip().replace(' ', '')
+    return "data/modules/"+slugify(
+        f"{wlang}_{author}_{title}_{str(datetime.timestamp(datetime.now())).replace('.', '')}.gsmf".lower().strip().replace(
+            ' ', ''))
 
 
 def write_init(module_file, author, title, wlang, cur_date, trfillmode, cover):

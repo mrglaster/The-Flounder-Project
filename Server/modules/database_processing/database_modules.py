@@ -80,4 +80,7 @@ def is_correct_authorize(connection, login: str, password: str, is_email=False):
 def get_userid(connection, name: str) -> int:
     """Returns userid by his/her name"""
     query = f'SELECT id FROM Users WHERE name="{name}"'
-    return connection.cursor().execute(query).fetchall()[0][0]
+    try:
+        return connection.cursor().execute(query).fetchall()[0][0]
+    except:
+        return None

@@ -5,6 +5,7 @@ from fastapi import FastAPI, Request
 from pyisemail import is_email
 
 import modules.rr_processing.requests_consts
+import modules.pronunciation.pronunciation
 from modules.database_processing.database_modules import *
 from modules.database_processing.modules_processing import get_latest_modules
 from modules.gsmf_processing.writer import create_module
@@ -72,7 +73,7 @@ async def get_l_modules(info: Request):
     if req_info["secretkey"] == SECRET_KEY:
         page = req_info["page"]
         page_size = req_info["page_size"]
-        return {"status": 200, data: get_latest_modules(destination=CONNECTION, page_num=page, page_size=page_size)}
+        return {"status": 200, "data": get_latest_modules(destination=CONNECTION, page_num=page, page_size=page_size)}
     return modules.rr_processing.requests_consts.WRONG_SKEY_JSON
 
 
@@ -96,10 +97,22 @@ async def generate_module(info: Request):
 
 @app.get("/study/download_module")
 async def send_module(info: Request):
-    req_info = await  info.json()
+    req_info = await info.json()
     if req_info["secretkey"] == SECRET_KEY:
         return modules.database_processing.modules_processing.download_module(connection=CONNECTION,
                                                                               module_id=req_info["module_id"])
+
+
+@app.post("/study/pronunciation")
+async def analyze_pronunciation(info: Request):
+    req_info = await info.json()
+    if req_info["secretkey"] == SECRET_KEY:
+        audio = req_info["audio"]
+        a_format = req_info["format"]
+        word = req_info["word"]
+        return modules.pronunciation.pronunciation.check_pronunciation_english_only(audio_base64=audio, word=word,
+                                                                                    a_format=a_format)
+    return modules.rr_processing.requests_consts.WRONG_SKEY_JSON
 
 
 def on_exit():

@@ -2,6 +2,8 @@ import requests
 import base64
 from nostril import nonsense
 from deep_translator import GoogleTranslator
+import modules.phonemes_to_sound.processor
+import modules.phonemes_to_sound.generator
 from modules.gsmf_processing.languages_parameters import GERMAN_GENUS
 from pprint import pprint
 from german_nouns.lookup import Nouns
@@ -52,7 +54,12 @@ def get_wordinfo_en(word):
     try:
         pronunciation = get_as_base64(response[0]['phonetics'][0]['audio'])
     except:
-        pronunciation = "NOT FOUND"
+        try:
+            phonemes = response[0]["phonetic"]
+            pronunciation = modules.phonemes_to_sound.processor.generate_single_pronunciation_base64(phonemes)
+        except:
+            pronunciation = modules.phonemes_to_sound.processor.generate_single_pronunciation_base64(word)
+    pronunciation = pronunciation.replace('\n', '')
     definitions = []
     examples = []
     for i in response:

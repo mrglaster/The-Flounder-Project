@@ -7,7 +7,10 @@ def get_username_by_id(connection, author_id):
     """Returns author name  by his/her id"""
     cursor = connection.cursor()
     res = cursor.execute(f"SELECT name FROM Users WHERE id={author_id}").fetchall()
-    return res[0][0]
+    try:
+        return res[0][0]
+    except:
+        return None
 
 
 def get_latest_modules(destination, page_num: int, page_size: int) -> []:
@@ -55,6 +58,8 @@ def get_module_info(connection, module_id: int) -> dict:
 def add_module_to_database(connection, author_name, title, description, icon, language, tags, module_file, wordlist):
     """Appends the study module into the global database"""
     today = date.today().strftime('%Y-%m-%d')
+    if modules.database_processing.database_modules.get_userid(connection, author_name) is None:
+        return 0
     query = f'INSERT INTO Studymodules(authorId, title, description, iconPath, language, tags, moduleFile, wordlist, date) VALUES ' \
             f'({modules.database_processing.database_modules.get_userid(connection, author_name)}, "{title}", "{description}", "{icon}", "{language}", "{tags}", "{module_file}", "{wordlist}", "{today}");'
     connection.cursor().execute(query)
@@ -69,3 +74,9 @@ def download_module(connection, module_id: int) -> dict:
     data = result[0][0]
     with open(data, "rb") as module_file:
         return {"status": 200, "data": str(base64.b64encode(module_file.read())).replace("b'", '').replace("'", '')}
+
+
+def check_title(connection, title: str):
+    query = f'SELECT * FROM Studymodules WHERE title="{title}"'
+    result = connection.cursor().execute(query).fetchall()
+    return len(result) != 0

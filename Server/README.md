@@ -272,5 +272,36 @@ If something is wrong with the user's data:
  }
 ```
 
+### Check the pronunciation
 
+Routing: /study/pronunciation <br>
+Type: POST <br>
 
+Example Request: 
+
+```
+{
+	"secretkey": SECRET_KEY,
+	"format": "wav",
+	"word": "choir",
+	"audio": "UklGRjJFA...IwAAA="
+}
+```
+
+Example Response: 
+
+```
+{
+	"status": 200,
+	"scores": "1" ; Uses IELTS Scores System. 1 - Min, 9 - Max
+}
+```
+
+If something went wrong:
+
+```
+{
+	"status": 406,
+	"description": "something went wrong"
+}
+```

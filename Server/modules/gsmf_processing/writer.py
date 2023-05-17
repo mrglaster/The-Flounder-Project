@@ -122,8 +122,8 @@ def slugify(value, allow_unicode=False):
 def generate_name(wlang, author, title):
     """Generates filename by author name and word's language"""
     return "data/modules/"+slugify(
-        f"{wlang}_{author}_{title}_{str(datetime.timestamp(datetime.now())).replace('.', '')}.gsmf".lower().strip().replace(
-            ' ', ''))
+        f"{wlang}_{author}_{title}_{str(datetime.timestamp(datetime.now())).replace('.', '')}".lower().strip().replace(
+            ' ', ''))+".gsmf"
 
 
 def write_init(module_file, author, title, wlang, cur_date, trfillmode, cover):

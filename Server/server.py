@@ -3,7 +3,7 @@ import os
 import atexit
 from fastapi import FastAPI, Request
 from pyisemail import is_email
-
+from fastapi.staticfiles import StaticFiles
 import modules.rr_processing.requests_consts
 import modules.pronunciation.pronunciation
 from modules.database_processing.database_modules import *
@@ -11,7 +11,7 @@ from modules.database_processing.modules_processing import get_latest_modules
 from modules.gsmf_processing.writer import create_module
 
 app = FastAPI()
-
+app.mount("/data", StaticFiles(directory="data"), name="data")
 DATABASE_PATH = "./Database/Glossa.db"
 CONNECTION = create_connection(DATABASE_PATH)
 SECRET_KEY = 42
@@ -126,7 +126,7 @@ def on_exit():
 def main():
     """Runs server via Uvicorn"""
     atexit.register(on_exit)
-    uvicorn.run(f"{os.path.basename(__file__)[:-3]}:app", log_level="info", host="192.168.0.12")
+    uvicorn.run(f"{os.path.basename(__file__)[:-3]}:app", log_level="info")
 
 
 if __name__ == "__main__":

@@ -22,4 +22,10 @@
         ContentTemplate="{DataTemplate local:MainPage}"
         Icon="{OnPlatform 'icon_about.png', iOS='icon_about_ios.png', MacCatalyst='icon_about_ios.png'}"
         Route="MainPage"/>
+
+    <ShellContent
+        Title="Module"
+        ContentTemplate="{DataTemplate local:ModulePage}"
+        Icon="{OnPlatform 'icon_about.png', iOS='icon_about_ios.png', MacCatalyst='icon_about_ios.png'}"
+        Route="ModulePage"/>
 </Shell>

@@ -41,8 +41,6 @@ namespace Glossa_App.ViewModels
             LoadModules(1);   
         }
 
-        
-
         private async void LoadModules(int page)
         {
             JsonNode json_modules = await rep.GetModules(page);
@@ -62,8 +60,6 @@ namespace Glossa_App.ViewModels
                     );
                 return module;
             }).ToList();
-
-            System.Diagnostics.Debug.WriteLine(json_modules.ToString());
         }
     }
 }

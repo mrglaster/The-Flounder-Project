@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Glossa_App.Views.Components"
+             x:Class="Glossa_App.Views.ModulePage"
+             xmlns:viewModels="clr-namespace:Glossa_App.ViewModels"
+             Title="ModulePage">
+    <ContentPage.BindingContext>
+        <viewModels:ModuleViewModel x:Name="viewmodel"/>
+    </ContentPage.BindingContext>
+    <ScrollView>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <!--<Frame BackgroundColor="White" 
+                   CornerRadius="30" 
+                   Padding="0" 
+                   Margin="20" 
+                   BorderColor="LightGray"
+                   Grid.Row="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <SearchBar Placeholder="Search there..."
+                            HeightRequest="50"
+                            Background="White"
+                            Grid.Column="0"/>
+
+                    <Button x:Name="Search"
+                            Text="Search"
+                            HeightRequest="50"
+                            Grid.Column="1"
+                            CornerRadius="0"/>
+                </Grid>
+            </Frame>-->
+
+            <Label Text="{Binding Title}"
+                   TextColor="black"
+                   FontSize="25"
+                   Margin="30"
+                   Grid.Row="0"/>
+            <BoxView HeightRequest="5" 
+                     BackgroundColor="Black"
+                     Grid.Row="1"
+                     Margin="30,0,0,0"
+                     WidthRequest="170"
+                     CornerRadius="90"
+                     HorizontalOptions="Start"/>
+            <Grid Grid.Row="2"
+                  Margin="30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Frame Grid.Column="0">
+                    <Label Text="{Binding CurWord}"
+                           x:Name="cardNewWord"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"/>
+                </Frame>
+                <VerticalStackLayout Grid.Column="1"
+                                     Margin="10,0">
+                    <Button Text="Next"
+                            Command="{Binding NextWordCommand}"/>
+                    <Button Text="Prev"
+                            Command="{Binding PrevWordCommand}"/>
+                </VerticalStackLayout>
+                <Frame Grid.Column="2">
+                    <Label Text="Blabla"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"/>
+                </Frame>
+            </Grid>
+
+            <Label Text="Terms"
+                   TextColor="black"
+                   FontSize="21"
+                   Margin="30"
+                   HorizontalTextAlignment="Center"
+                   Grid.Row="3"/>
+
+            <CollectionView ItemsSource="{Binding WordModels}" 
+                            Grid.Row="4"
+                            HorizontalOptions="Center">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <local:WordView BindingContext="{Binding .}"
+                                             Margin="0, 0, 20, 0"/>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <!--<Frame Grid.Row="4"
+                   HorizontalOptions="Center">
+                <local:WordView />
+            </Frame>-->
+        </Grid>
+    </ScrollView>
+</ContentPage>

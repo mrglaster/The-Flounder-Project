@@ -68,7 +68,7 @@
                             Grid.Row="3"
                             ItemsLayout="{OnPlatform MacCatalyst='VerticalGrid, 2', WinUI='VerticalGrid, 2'}"
                             ItemSizingStrategy="{OnPlatform MacCatalyst='MeasureFirstItem', WinUI='MeasureFirstItem'}"
-                            Margin="30, 0, 30, 0">
+                            Margin="{OnPlatform MacCatalyst='30, 0, 30, 0', WinUI='30, 0, 30, 0', Android='10, 0, 10, 0', iOS='10, 0, 10, 0'}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <local:TestBlockView BindingContext="{Binding .}"

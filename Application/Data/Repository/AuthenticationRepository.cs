@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 
 using Glossa_App.Data.Repository.Interfaces;
+using System.Xml;
+//using Java.Lang;
 //using Android.OS;
 
 namespace Glossa_App.Data.Repository
@@ -93,5 +95,35 @@ namespace Glossa_App.Data.Repository
             JsonNode jsonResponse = JsonNode.Parse(result);
             return jsonResponse;
         }
+
+        public async Task<String> GetGSMF(string url)
+        {
+            return await _httpClient.GetStringAsync(url);
+        }
+
+        //public async Task DownloadFile(string url, string filePath)
+        //{
+        //        // Отправка GET-запроса по указанной ссылке
+        //        HttpResponseMessage response = await _httpClient.GetAsync(url);
+        //        response.EnsureSuccessStatusCode();
+
+        //        // Сохранение содержимого файла в указанный путь
+        //        using (var fileStream = System.IO.File.Create(filePath))
+        //        {
+        //            await response.Content.CopyToAsync(fileStream);
+        //        }
+        //}
+
+        //public async string LoadXmlFromUrl(string url)
+        //{
+        //        // Отправка GET-запроса по указанной ссылке
+        //        HttpResponseMessage response = await _httpClient.GetAsync(url);
+        //        response.EnsureSuccessStatusCode();
+
+        //        // Получение содержимого файла в виде строки
+        //       string xmlContent = await response.Content.ReadAsStringAsync();
+
+        //    return xmlContent;
+        //}
     }
 }

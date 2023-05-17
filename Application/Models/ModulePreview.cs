@@ -51,6 +51,11 @@ namespace Glossa_App.Models
             get => tags;
         }
 
+        public string Modulefile
+        {
+            get => modulefile;
+        }
+
         public string Created
         {
             get => created.ToString("yyyy, MMM, dd", CultureInfo.GetCultureInfo("en-US"));
@@ -75,7 +80,7 @@ namespace Glossa_App.Models
 
         private async void OnTappedCommandExecute()
         {
-            Debug.WriteLine("Opened");
+            await Shell.Current.GoToAsync($"//ModulePage?downloadLink={modulefile}");
         }
     }
 }

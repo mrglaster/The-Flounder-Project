@@ -5,8 +5,10 @@ using System.Text;
 using System.Text.Json.Nodes;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 using Glossa_App.Data.Repository.Interfaces;
+//using Android.OS;
 
 namespace Glossa_App.Data.Repository
 {
@@ -16,6 +18,7 @@ namespace Glossa_App.Data.Repository
         private const string URI = "http://192.168.0.12:8000";
         private readonly HttpClient _httpClient;
         private static AuthenticationRepository authenticationInstance = null;
+        private const int _page_size = 5;
 
         private AuthenticationRepository(HttpClient httpClient)
         {
@@ -68,6 +71,27 @@ namespace Glossa_App.Data.Repository
             string result = await response.Content.ReadAsStringAsync();
             JsonNode jsonResponse = JsonNode.Parse(result);
             return jsonResponse["status"].ToString();
+        }
+
+        public async Task<JsonNode> GetModules(int _page)
+        {
+            using StringContent jsonContent = new(
+                JsonSerializer.Serialize(new
+                {
+                    page = _page,
+                    page_size = _page_size,
+                    secretkey = SECRETKEY
+                }),
+                Encoding.UTF8,
+                "application/json");
+            UriBuilder uriBuilder = new UriBuilder($"{URI}/study/latest_modules");
+            uriBuilder.Query = $"secretkey={SECRETKEY}&page={_page}&page_size={_page_size}";
+            using HttpResponseMessage response = await _httpClient.PostAsync(
+                "study/latest_modules", jsonContent);
+            //System.Diagnostics.Debug.WriteLine(uriBuilder.Uri.ToString());
+            string result = await response.Content.ReadAsStringAsync();
+            JsonNode jsonResponse = JsonNode.Parse(result);
+            return jsonResponse;
         }
     }
 }

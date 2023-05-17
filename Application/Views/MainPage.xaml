@@ -1,54 +1,83 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mi="clr-namespace:MaterialIcons;assembly=MaterialIcons"
              xmlns:local="clr-namespace:Glossa_App.Views.Components"
+             xmlns:viewModels="clr-namespace:Glossa_App.ViewModels"
              x:Class="Glossa_App.Views.MainPage"
              Title="MainPage">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Frame BackgroundColor="White" 
-               CornerRadius="30" 
-               Padding="0" 
-               Margin="20" 
-               BorderColor="White"
-               Grid.Row="0">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
+    <ContentPage.BindingContext>
+        <viewModels:MainViewModel />
+    </ContentPage.BindingContext>
+    <ScrollView>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Frame BackgroundColor="White" 
+                   CornerRadius="30" 
+                   Padding="0" 
+                   Margin="20" 
+                   BorderColor="LightGray"
+                   Grid.Row="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <Entry Placeholder="Search there..."
-                        HeightRequest="70"
-                        Background="White"
-                        Grid.Column="0"/>
+                    <SearchBar Placeholder="Search there..."
+                            HeightRequest="50"
+                            Background="White"
+                            Grid.Column="0"/>
 
-                <Button x:Name="Search"
-                        Text="Search"
-                        HeightRequest="70"
-                        Grid.Column="1"
-                        CornerRadius="0"/>
-            </Grid>
-        </Frame>
+                    <Button x:Name="Search"
+                            Text="Search"
+                            HeightRequest="50"
+                            Grid.Column="1"
+                            CornerRadius="0"/>
+                </Grid>
+            </Frame>
 
-        <Label Text="Recently uploaded"
-               TextColor="black"
-               FontSize="25"
-               Margin="30"
-               Grid.Row="1"/>
-        <BoxView HeightRequest="5" 
-                 BackgroundColor="Black"
-                 Grid.Row="2"
-                 Margin="30,0,0,0"
-                 WidthRequest="170"
-                 CornerRadius="90"
-                 HorizontalOptions="Start"/>
+            <Label Text="Recently uploaded"
+                   TextColor="black"
+                   FontSize="25"
+                   Margin="30"
+                   Grid.Row="1"/>
+            <BoxView HeightRequest="5" 
+                     BackgroundColor="Black"
+                     Grid.Row="2"
+                     Margin="30,0,0,0"
+                     WidthRequest="170"
+                     CornerRadius="90"
+                     HorizontalOptions="Start"/>
 
-        <local:TestBlockView Grid.Row="3"/>
-    </Grid>
+            <!--<CollectionView ItemsSource="{Binding Modules}" Grid.Row="3">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <ContentView>
+                            <local:TestBlockView BindingContext="{Binding .}"/>
+                        </ContentView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>-->
+            <CollectionView ItemsSource="{Binding Modules}" 
+                            Grid.Row="3"
+                            ItemsLayout="{OnPlatform MacCatalyst='VerticalGrid, 2', WinUI='VerticalGrid, 2'}"
+                            ItemSizingStrategy="{OnPlatform MacCatalyst='MeasureFirstItem', WinUI='MeasureFirstItem'}"
+                            Margin="30, 0, 30, 0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <local:TestBlockView BindingContext="{Binding .}"
+                                             Margin="0, 0, 20, 0"/>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+
+        </Grid>
+    </ScrollView>
 </ContentPage>

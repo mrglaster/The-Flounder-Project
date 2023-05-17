@@ -67,8 +67,9 @@ async def get_actual_err_codes(info: Request):
     return modules.rr_processing.requests_consts.WRONG_SKEY_JSON
 
 
-@app.get("/study/latest_modules")
+@app.post("/study/latest_modules")
 async def get_l_modules(info: Request):
+    print(info)
     req_info = await  info.json()
     if req_info["secretkey"] == SECRET_KEY:
         page = req_info["page"]
@@ -125,7 +126,7 @@ def on_exit():
 def main():
     """Runs server via Uvicorn"""
     atexit.register(on_exit)
-    uvicorn.run(f"{os.path.basename(__file__)[:-3]}:app", log_level="info")
+    uvicorn.run(f"{os.path.basename(__file__)[:-3]}:app", log_level="info", host="192.168.0.12")
 
 
 if __name__ == "__main__":

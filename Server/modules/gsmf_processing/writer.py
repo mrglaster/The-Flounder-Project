@@ -14,6 +14,7 @@ from modules.gsmf_processing.words_processing import translate_words
 from modules.gsmf_processing.words_processing import get_wordinfo_en
 from modules.gsmf_processing.words_processing import is_wordlist_valid
 from modules.database_processing.modules_processing import add_module_to_database
+from modules.gsmf_processing.words_processing import get_wordinfo_de_proto
 
 
 def generate_random_string(length=20):
@@ -73,8 +74,9 @@ def create_module(connection, request_json):
     with open(filename, "a", encoding="utf-8") as module_file:
         write_init(module_file, author, title, wlang, cur_date, translation_mode, cover)
         write_wordlist(module_file, words_list)
+        print(trlang)
         write_translations(module_file, wlang, words_list, translations=translations_list, trlang=trlang)
-        write_words_info(module_file, words_list)
+        write_words_info(module_file, words_list, language=wlang)
         module_file.write("</gsmf>")
 
     cover_path = 'data/images/default_cover.png'
@@ -121,9 +123,9 @@ def slugify(value, allow_unicode=False):
 
 def generate_name(wlang, author, title):
     """Generates filename by author name and word's language"""
-    return "data/modules/"+slugify(
+    return "data/modules/" + slugify(
         f"{wlang}_{author}_{title}_{str(datetime.timestamp(datetime.now())).replace('.', '')}".lower().strip().replace(
-            ' ', ''))+".gsmf"
+            ' ', '')) + ".gsmf"
 
 
 def write_init(module_file, author, title, wlang, cur_date, trfillmode, cover):
@@ -167,13 +169,17 @@ def write_translations(module_file, source_language, word_list, translations=[],
     module_file.write(" </translations>\n")
 
 
-def write_words_info(module_file, wordlist):
+def write_words_info(module_file, wordlist, language='en'):
     """Writes study info about the words"""
     audio = []
     g_examples = []
     g_definitions = []
+    pronunciation, definitions, examples = None, None, None
     for i in wordlist:
-        pronunciation, definitions, examples = get_wordinfo_en(i)
+        if language == 'en':
+            pronunciation, definitions, examples = get_wordinfo_en(i)
+        elif language == 'de':
+            pronunciation, definitions, examples = get_wordinfo_de_proto(i)
         audio.append(pronunciation)
         g_examples.append(examples)
         g_definitions.append(definitions)

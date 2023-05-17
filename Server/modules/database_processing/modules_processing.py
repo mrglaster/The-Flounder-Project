@@ -80,3 +80,44 @@ def check_title(connection, title: str):
     query = f'SELECT * FROM Studymodules WHERE title="{title}"'
     result = connection.cursor().execute(query).fetchall()
     return len(result) != 0
+
+
+
+def find_modules(connection, search_line: str):
+    query_b_name = f"SELECT * FROM  Studymodules WHERE title LIKE '%{search_line}'"
+    if not len(search_line.replace(" ", "")):
+        return {"status": 200, "data": []}
+    word_list = search_line.lower().split(" ")
+    if len(word_list) == 1 and word_list[0] == ' ':
+        word_list = [search_line]
+    tags_query = "SELECT * FROM Studymodules WHERE "
+    words_query = "SELECT * FROM Studymodules WHERE "
+    for i, tag in enumerate(word_list):
+        if i > 0:
+            tags_query += " AND "
+            words_query += " AND "
+        tags_query += f"tags LIKE '%{tag}%'"
+        words_query += f"wordList LIKE '%{tag}%'"
+    c_cursor = connection.cursor()
+    b_name = c_cursor.execute(query_b_name).fetchall()
+    b_tags = c_cursor.execute(tags_query).fetchall()
+    b_words = c_cursor.execute(words_query).fetchall()
+    rows_got = b_name + b_tags + b_words
+    result = []
+    for line in rows_got:
+        current_module = {
+            "id": line[0],
+            "author": get_username_by_id(connection, line[1]),
+            "title": line[2],
+            "description": line[3],
+            "icon": line[4],
+            "language": line[5],
+            "tags": line[6],
+            "module_file": line[7],
+            "created": line[9]
+        }
+        if current_module not in result:
+            result.append(current_module)
+    return {"status": 200, "data": result}
+
+

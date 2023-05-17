@@ -1,11 +1,11 @@
 import uvicorn
 import os
 import atexit
+import modules.rr_processing.requests_consts
+import modules.pronunciation.pronunciation
 from fastapi import FastAPI, Request
 from pyisemail import is_email
 from fastapi.staticfiles import StaticFiles
-import modules.rr_processing.requests_consts
-import modules.pronunciation.pronunciation
 from modules.database_processing.database_modules import *
 from modules.database_processing.modules_processing import get_latest_modules
 from modules.gsmf_processing.writer import create_module
@@ -114,6 +114,16 @@ async def analyze_pronunciation(info: Request):
         return modules.pronunciation.pronunciation.check_pronunciation_english_only(audio_base64=audio, word=word,
                                                                                     a_format=a_format)
     return modules.rr_processing.requests_consts.WRONG_SKEY_JSON
+
+
+@app.post("/search")
+async def find_modules(info: Request):
+    req_info = await info.json()
+    if req_info["secretkey"] == SECRET_KEY:
+        search_line = req_info["search_line"]
+        return  modules.database_processing.modules_processing.find_modules(connection=CONNECTION, search_line=search_line)
+    return modules.rr_processing.requests_consts.WRONG_SKEY_JSON
+
 
 
 def on_exit():

@@ -77,7 +77,7 @@ def create_module(connection, request_json):
         write_words_info(module_file, words_list)
         module_file.write("</gsmf>")
 
-    cover_path = 'data/images/default.png'
+    cover_path = 'data/images/default_cover.png'
     if 'default' not in cover:
         cover_path = f'data/images/{generate_random_string(20)}.png'
         image_bytes = base64.b64decode(cover)
@@ -90,8 +90,8 @@ def create_module(connection, request_json):
                            title=title,
                            description=description,
                            language=wlang,
-                           tags=_array_to_string(tags),
-                           wordlist=_array_to_string(words_list),
+                           tags=_array_to_string(tags).lower(),
+                           wordlist=_array_to_string(words_list).lower(),
                            module_file=filename,
                            icon=cover_path)
 

@@ -305,3 +305,67 @@ If something went wrong:
 	"description": "something went wrong"
 }
 ```
+
+### Modules search
+
+Routing: /search <br>
+Type: POST <br>
+
+Request Structure: 
+
+```
+{
+	"secretkey": SECRET_KEY,
+	"search_line": "my tags, module name or words we try to find in the modules"
+}
+```
+
+Example: <br>
+
+
+```
+{
+	"secretkey": SECRET_KEY,
+	"search_line": "fun gun"
+}
+```
+
+
+Response: <br>
+
+
+```
+{
+	"status": 200,
+	"data": [
+		{
+			"id": 3,
+			"author": "Glaster",
+			"title": "Firearms",
+			"description": "Learn some new words about the guns!",
+			"icon": "data/images/default.png",
+			"language": "en",
+			"tags": "fun;gun;weapon;firearms",
+			"module_file": "data/modules/en_glaster_firearms_1684053909278942.gsmf",
+			"created": "2023-05-14"
+		},
+		{
+			"id": 4,
+			"author": "Glaster",
+			"title": "Firearms 7: Expanded",
+			"description": "Learn some new words about the guns!",
+			"icon": "data/images/default_cover.png",
+			"language": "en",
+			"tags": "fun;gun;weapon;firearms",
+			"module_file": "data/modules/en_glaster_firearms7expanded_1684333598410762gsmf",
+			"created": "2023-05-17"
+		}
+	]
+}
+```
+
+
+
+
+
+

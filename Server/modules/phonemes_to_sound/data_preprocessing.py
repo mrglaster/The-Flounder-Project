@@ -42,7 +42,8 @@ SPEAKERS = {
     "Chantal": "fr-CA",
 
     # German
-    "Marlene": "de-DE",
+    "Hans": "de-DE",
+
 
     # Icelandic
     "Dora": "is-IS",

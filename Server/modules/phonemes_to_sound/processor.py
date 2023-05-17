@@ -15,7 +15,7 @@ def generate_single_pronunciation_base64(phonemes: str, language="en-GB", speake
     else:
         is_valid_speaker(speaker)
         speaker_name = speaker
-    return modules.phonemes_to_sound.generator.get_single_pronunciation(speaker=speaker_name, text=phonemes)
+    return str(modules.phonemes_to_sound.generator.get_single_pronunciation(speaker=speaker_name, text=phonemes)).replace('\n', '')
 
 
 def generate_single_pronunciation_to_file(phonemes: str, filename: str, language="en-US", speaker=None):

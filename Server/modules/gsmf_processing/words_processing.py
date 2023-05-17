@@ -82,20 +82,44 @@ def get_wordinfo_en(word):
     return pronunciation, definitions, examples
 
 
-def get_wordinfo_de_proto(word):
-    """Gets information about the current german word
+def get_wordinfo_de_proto(word, hint_lang="en"):
+    """Gets information about the current German word
     PROTOTYPE! WILL BE REMOVED! USE ON YOUR OWN RISK!"""
     url = "https://lexicala1.p.rapidapi.com/search-entries"
-    querystring = {f"text": f"{word}", "language": "de"}
+    word_new = word.replace("der", "").replace("die", "").replace("das", "").replace(" ", '')
+    querystring = {f"text": f"{word_new}", "language": "de"}
     headers = {
-        "X-RapidAPI-Key": "cd6b050580msh74fad990fc989f6p17530cjsnb396d6cfe8ea",
+        "X-RapidAPI-Key": "fc0375a11fmsh92b1219e5849c87p17ddc4jsn8bc03c3f1c4e",
         "X-RapidAPI-Host": "lexicala1.p.rapidapi.com"
     }
     response = requests.request("GET", url, headers=headers, params=querystring).json()["results"]
+    phonemes = None
+    try:
+        phonemes = response[0]["headword"]["pronunciation"]["value"]
+    except:
+        phonemes = None
     definitions = []
     examples = []
-    for i in response:
-        for j in i["senses"]:
-            definitions.append(j["definition"])
-            examples.append(j["examples"][0]["text"])
-    return definitions, examples
+    for entry in response:
+        senses = entry["senses"]
+        for sense in senses:
+            try:
+                definitions.append(sense["definition"])
+            except KeyError:
+                definitions.append("NOT FOUND")
+            try:
+                examples_data = sense["examples"]
+                if examples_data:
+                    example_text = examples_data[0]["text"]
+                    example_translation = examples_data[0]["translations"][hint_lang]["text"]
+                    examples.append(f"{example_text} - {example_translation}")
+                else:
+                    examples.append("NOT FOUND")
+            except KeyError:
+                examples.append("NOT FOUND")
+    if phonemes is not None:
+        pronunciation = modules.phonemes_to_sound.processor.generate_single_pronunciation_base64(phonemes, language='de-DE',
+                                                                                             speaker="Hans")
+    else:
+        pronunciation = "NOT FOUND"
+    return pronunciation, definitions, examples
